@@ -81,13 +81,13 @@ class SimpleTipView : View {
         textPaint.density = context.resources.displayMetrics.density
         textPaint.color = Color.BLACK
         textPaint.style = Paint.Style.FILL_AND_STROKE
-        textPaint.textSize = 55f
+        textPaint.textSize = context.dip2px(15f).toFloat()
 
         txtWidth = textPaint.measureText(content.toString())
 
         txtWidth = matchChoose(minWidth, maxWidth, txtWidth.toInt()).toFloat()
 
-        layout = StaticLayout(content, textPaint, txtWidth.toInt(), Layout.Alignment.ALIGN_NORMAL, 1.2f, 1.2f, true)
+        layout = StaticLayout(content, textPaint, txtWidth.toInt(), Layout.Alignment.ALIGN_NORMAL, 1.1f, 1.0f, true)
 
 
         txtHeight = Math.max(minHeight.toFloat(), (layout as StaticLayout).height.toFloat())
@@ -103,10 +103,6 @@ class SimpleTipView : View {
         val h = MeasureSpec.makeMeasureSpec((txtHeight + padding * 2 + arrow_height).toInt(), MeasureSpec.EXACTLY)
 
         setMeasuredDimension(w, h)
-//
-//        setMeasuredDimension(
-//                MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(widthMeasureSpec) + padding, MeasureSpec.getMode(widthMeasureSpec)),
-//                MeasureSpec.makeMeasureSpec(MeasureSpec.getSize(heightMeasureSpec) + padding, MeasureSpec.getMode(heightMeasureSpec)))
 
     }
 
