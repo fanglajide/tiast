@@ -1,7 +1,6 @@
 package com.cheheihome.library
 
 import android.content.Context
-import android.view.View
 
 
 /**
@@ -31,9 +30,15 @@ fun Context.getDisplayWH(): IntArray {
 }
 
 
-fun View.offsetCenter() {
-
-
+fun matchChoose(start: Int, end: Int, num: Int): Int {
+    var s = start
+    var e = end
+    if (s > end) {
+        val tmp = s
+        e = s
+        s = tmp
+    }
+    return Math.max(s, Math.min(num, e))
 }
 
 
