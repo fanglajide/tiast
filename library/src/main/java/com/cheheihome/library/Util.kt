@@ -6,7 +6,7 @@ import android.content.Context
 /**
  * Created by chanlevel on 2017/10/24.
  */
-fun Context.screentWidth() = resources.displayMetrics.widthPixels
+fun Context.screenWidth() = resources.displayMetrics.widthPixels
 
 fun Context.screenHeight() = resources.displayMetrics.heightPixels
 

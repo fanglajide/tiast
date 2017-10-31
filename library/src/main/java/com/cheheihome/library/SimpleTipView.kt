@@ -24,7 +24,7 @@ class SimpleTipView : View {
 
 
     private val arrow_height = 30
-    private val color = Color.RED
+    private val color = Color.WHITE
     private val shadowColor = 0x77000000
     private val rectRadius = 20f
     private val shadowRadius = 5f
@@ -56,13 +56,13 @@ class SimpleTipView : View {
 
         drawRect = RectF()
 
-        maxWidth = context.screentWidth() / 3
-        minHeight = context.dip2px(30f)
-        minWidth = context.dip2px(30f)
+        maxWidth = context.screenWidth() / 3
+        minHeight = context.dip2px(20f)
+        minWidth = context.dip2px(20f)
 
     }
 
-    private var content: CharSequence? = "你牛逼啊  " + "啊里的风景看啦"
+    private var content: CharSequence? = ""
 
     fun setText(str: CharSequence) {
         this.content = str
@@ -72,10 +72,10 @@ class SimpleTipView : View {
     var txtHeight = 0f
     var layout: Layout? = null
     val padding by lazy {
-        context.dip2px(15f).toFloat()
+        context.dip2px(10f).toFloat()
     }
 
-    private fun calculateSize() {
+    public fun calculateSize(): IntArray {
 
         val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
         textPaint.density = context.resources.displayMetrics.density
@@ -92,15 +92,17 @@ class SimpleTipView : View {
 
         txtHeight = Math.max(minHeight.toFloat(), (layout as StaticLayout).height.toFloat())
 
+        return intArrayOf((txtWidth + padding * 2).toInt(), (txtHeight + padding * 2 + arrow_height).toInt())
+
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 //        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        calculateSize()
+        val arr = calculateSize()
 
 
-        val w = MeasureSpec.makeMeasureSpec((txtWidth + padding * 2).toInt(), MeasureSpec.EXACTLY)
-        val h = MeasureSpec.makeMeasureSpec((txtHeight + padding * 2 + arrow_height).toInt(), MeasureSpec.EXACTLY)
+        val w = MeasureSpec.makeMeasureSpec(arr[0], MeasureSpec.EXACTLY)
+        val h = MeasureSpec.makeMeasureSpec(arr[1], MeasureSpec.EXACTLY)
 
         setMeasuredDimension(w, h)
 
