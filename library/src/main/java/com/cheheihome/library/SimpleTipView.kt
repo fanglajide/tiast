@@ -25,11 +25,11 @@ class SimpleTipView : View {
 
     private val arrow_height = 30
     private val color = Color.WHITE
-    private val shadowColor = 0x77000000
+    private val shadowColor = Color.parseColor("#77000000")
     private val rectRadius = 20f
-    private val shadowRadius = 5f
-    private val dx = 5f
-    private val dy = 5f
+    private var shadowRadius = 2f
+    private var dx = 5f
+    private var dy = 5f
     private var drawRect: RectF
 
     private var maxWidth = 0
@@ -40,6 +40,10 @@ class SimpleTipView : View {
 
     init {
 
+        val dp_ = context.dip2px(3f).toFloat()
+        shadowRadius = dp_
+        dx = context.dip2px(1f).toFloat()
+        dy = context.dip2px(1f).toFloat()
 
         paint.isAntiAlias = true
         /**
@@ -59,6 +63,7 @@ class SimpleTipView : View {
         maxWidth = context.screenWidth() / 3
         minHeight = context.dip2px(20f)
         minWidth = context.dip2px(20f)
+        setLayerType(View.LAYER_TYPE_SOFTWARE, null)
 
     }
 
@@ -75,7 +80,7 @@ class SimpleTipView : View {
         context.dip2px(10f).toFloat()
     }
 
-    public fun calculateSize(): IntArray {
+    fun calculateSize(): IntArray {
 
         val textPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
         textPaint.density = context.resources.displayMetrics.density
@@ -92,7 +97,7 @@ class SimpleTipView : View {
 
         txtHeight = Math.max(minHeight.toFloat(), (layout as StaticLayout).height.toFloat())
 
-        return intArrayOf((txtWidth + padding * 2).toInt(), (txtHeight + padding * 2 + arrow_height).toInt())
+        return intArrayOf((txtWidth + padding * 2+dx*2+shadowRadius*2).toInt(), (txtHeight + padding * 2 + arrow_height+dy*2+shadowRadius*2).toInt())
 
     }
 
@@ -116,8 +121,8 @@ class SimpleTipView : View {
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas!!)
 
-        val height = measuredHeight.toFloat() - arrow_height - dy * 2
-        val width = measuredWidth.toFloat() - dx * 2
+        val height = measuredHeight.toFloat() - arrow_height - dy * 2 - shadowRadius * 2
+        val width = measuredWidth.toFloat() - dx * 2 - shadowRadius * 2
 
         path.reset()
         pathRect.reset()
