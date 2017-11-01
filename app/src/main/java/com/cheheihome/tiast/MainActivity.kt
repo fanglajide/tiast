@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
                                 .show()
                     }
                 }
-        stv.setText("iPhone 机型比较f")
+
     }
 
 

@@ -76,20 +76,6 @@
         app:layout_constraintVertical_bias="0.551" />
 
 
-    <com.cheheihome.library.SimpleTipView
-        android:id="@+id/stv"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        app:layout_constraintBottom_toBottomOf="@+id/button3"
-        app:layout_constraintEnd_toStartOf="@+id/button3"
-        app:layout_constraintStart_toEndOf="@+id/button">
-
-
-    </com.cheheihome.library.SimpleTipView>
-
     <Button
         android:id="@+id/button2"
         android:layout_width="60dp"

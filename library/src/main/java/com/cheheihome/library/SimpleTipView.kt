@@ -17,16 +17,16 @@ class SimpleTipView : View {
     constructor(ctx: Context) : super(ctx)
     constructor(ctx: Context, attributes: AttributeSet) : super(ctx, attributes)
 
-    val ARROW_TOP_LEFT = 0X000001
-    val ARROW_TOP_RIGHT = 0X000010
-    val ARROW_BOTTOM_LEFT = 0X000100
-    val ARROW_BOTTOM_RIGHT = 0X001000
+    // val ARROW_TOP_LEFT = 0X000001
+    // val ARROW_TOP_RIGHT = 0X000010
+    // val ARROW_BOTTOM_LEFT = 0X000100
+    // val ARROW_BOTTOM_RIGHT = 0X001000
 
 
-    private val arrow_height = 20
+    private var arrow_height = 20
     private val color = Color.WHITE
     private val shadowColor = Color.parseColor("#77000000")
-    private val rectRadius = 20f
+    private val rectRadius = 15f
     private var shadowRadius = 2f
     private var dx = 5f
     private var dy = 5f
@@ -40,10 +40,10 @@ class SimpleTipView : View {
 
     init {
 
-        val dp_ = context.dip2px(3f).toFloat()
-        shadowRadius = dp_
+        shadowRadius = context.dip2px(3f).toFloat()
         dx = context.dip2px(1f).toFloat()
         dy = context.dip2px(1f).toFloat()
+        arrow_height=context.dip2px(10f)
 
         paint.isAntiAlias = true
         /**
@@ -107,23 +107,24 @@ class SimpleTipView : View {
         this.anchor = view
     }
 
-    private fun calculateArrowOffset() {
+    private fun calculateArrowOffset(): Int {
         anchor?.let {
             val arr = IntArray(2)
             it.getLocationOnScreen(arr)
             val x = arr[0] + it.measuredWidth / 2
 
             val size = calculateSize();
-            val right = x + size[0]/2
-            val left = x - size[0]/2
+            val right = x + size[0] / 2
+            val left = x - size[0] / 2
 
             when {
-                right > context.screenWidth() -> arrowOffset = (right - context.screenWidth())/1
-                left < 0 -> arrowOffset = left/1
-                else -> arrowOffset = 0
+                right > context.screenWidth() -> return (right - context.screenWidth())
+                left < 0 -> return left
+                else -> return 0
             }
 
         }
+        return 0
     }
 
 
@@ -137,7 +138,7 @@ class SimpleTipView : View {
 
         setMeasuredDimension(w, h)
 
-        calculateArrowOffset()
+        arrowOffset = calculateArrowOffset()
     }
 
 
