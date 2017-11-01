@@ -23,7 +23,7 @@ class SimpleTipView : View {
     val ARROW_BOTTOM_RIGHT = 0X001000
 
 
-    private val arrow_height = 30
+    private val arrow_height = 20
     private val color = Color.WHITE
     private val shadowColor = Color.parseColor("#77000000")
     private val rectRadius = 20f
@@ -97,9 +97,35 @@ class SimpleTipView : View {
 
         txtHeight = Math.max(minHeight.toFloat(), (layout as StaticLayout).height.toFloat())
 
-        return intArrayOf((txtWidth + padding * 2+dx*2+shadowRadius*2).toInt(), (txtHeight + padding * 2 + arrow_height+dy*2+shadowRadius*2).toInt())
+        return intArrayOf((txtWidth + padding * 2 + dx * 2 + shadowRadius * 2).toInt(), (txtHeight + padding * 2 + arrow_height + dy * 2 + shadowRadius * 2).toInt())
 
     }
+
+    private var arrowOffset = 0
+    private var anchor: View? = null
+    fun anchor(view: View?) {
+        this.anchor = view
+    }
+
+    private fun calculateArrowOffset() {
+        anchor?.let {
+            val arr = IntArray(2)
+            it.getLocationOnScreen(arr)
+            val x = arr[0] + it.measuredWidth / 2
+
+            val size = calculateSize();
+            val right = x + size[0]/2
+            val left = x - size[0]/2
+
+            when {
+                right > context.screenWidth() -> arrowOffset = (right - context.screenWidth())/1
+                left < 0 -> arrowOffset = left/1
+                else -> arrowOffset = 0
+            }
+
+        }
+    }
+
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
 //        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
@@ -111,6 +137,7 @@ class SimpleTipView : View {
 
         setMeasuredDimension(w, h)
 
+        calculateArrowOffset()
     }
 
 
@@ -131,11 +158,11 @@ class SimpleTipView : View {
 
         pathRect.addRoundRect(rect, rectRadius, rectRadius, Path.Direction.CCW)
 
-        path.moveTo(dx + width / 2 + arrow_height, dy + height)
+        path.moveTo(arrowOffset + dx + width / 2 + arrow_height, dy + height)
 
-        path.lineTo(dx + width / 2, dy + height + arrow_height)
+        path.lineTo(arrowOffset + dx + width / 2, dy + height + arrow_height)
 
-        path.lineTo(dx + width / 2 - arrow_height, dy + height)
+        path.lineTo(arrowOffset + dx + width / 2 - arrow_height, dy + height)
 
 //        path.lineTo(dy, height)
 

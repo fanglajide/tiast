@@ -11,10 +11,10 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        listOf<TextView>(button, button3, button4, button5, textView)
+        listOf<TextView>(button, button2, button3, button4, button5, textView)
                 .forEach { v ->
                     v.setOnClickListener {
-                       // Toast.makeText(this@MainActivity, v.text, Toast.LENGTH_SHORT).show()
+                        // Toast.makeText(this@MainActivity, v.text, Toast.LENGTH_SHORT).show()
 
                         Tiast.make(this@MainActivity, "djfla放假啊三闾大夫进啦进啦")
                                 .anchor(v)

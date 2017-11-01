@@ -90,5 +90,15 @@
 
     </com.cheheihome.library.SimpleTipView>
 
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="60dp"
+        android:layout_height="50dp"
+        android:text="Btn2"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp" />
+
 
 </android.support.constraint.ConstraintLayout>

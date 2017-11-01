@@ -72,7 +72,8 @@ class Tiast(val ctx: Context) {
         }
         val arr = calculateRegion()
 
-        val size = (tip as SimpleTipView).calculateSize()
+        val size = (tip as SimpleTipView).apply { anchor(anchor) }.calculateSize()
+
 
         val lp = WindowManager.LayoutParams()
         lp.width = ctx.dip2px(size[0].toFloat())
@@ -87,7 +88,7 @@ class Tiast(val ctx: Context) {
         lp.y = arr[1] - size[1]
         wm.addView(tip, lp)
 
-        Handler()
+        handler
                 .postDelayed(
                         {
                             dismiss()
@@ -97,9 +98,12 @@ class Tiast(val ctx: Context) {
         return this
     }
 
+    private val handler = Handler()
+
     public fun dismiss(): Tiast {
         tip?.let {
-            wm.removeView(it)
+            if (it.isAttachedToWindow)
+                wm.removeView(it)
         }
         return this
     }
