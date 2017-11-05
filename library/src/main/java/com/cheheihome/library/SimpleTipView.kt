@@ -40,9 +40,9 @@ class SimpleTipView : View {
 
     init {
 
-        shadowRadius = context.dip2px(3f).toFloat()
-        dx = context.dip2px(1f).toFloat()
-        dy = context.dip2px(1f).toFloat()
+        shadowRadius = context.dip2px(2f).toFloat()
+        dx = context.dip2px(0.5f).toFloat()
+        dy = context.dip2px(0.5f).toFloat()
         arrow_height=context.dip2px(10f)
 
         paint.isAntiAlias = true
@@ -86,7 +86,7 @@ class SimpleTipView : View {
         textPaint.density = context.resources.displayMetrics.density
         textPaint.color = Color.BLACK
         textPaint.style = Paint.Style.FILL_AND_STROKE
-        textPaint.textSize = context.dip2px(15f).toFloat()
+        textPaint.textSize = context.dip2px(14f).toFloat()
 
         txtWidth = textPaint.measureText(content.toString())
 

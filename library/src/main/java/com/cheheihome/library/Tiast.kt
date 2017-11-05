@@ -3,6 +3,7 @@ package com.cheheihome.library
 import android.content.Context
 import android.graphics.PixelFormat
 import android.os.Handler
+import android.os.Looper
 import android.view.Gravity
 import android.view.View
 import android.view.WindowManager
@@ -26,7 +27,7 @@ class Tiast(val ctx: Context) {
 
 
     private var anchor: View? = null
-    private var tip: View? = null
+    private var tip: SimpleTipView? = null
     private val wm: WindowManager by lazy {
         ctx.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     }
@@ -38,7 +39,7 @@ class Tiast(val ctx: Context) {
     private var duration = 2000
     private var content: String? = null
 
-    public fun setContent(str: String) {
+    fun setContent(str: String) {
         content = str
         tip = SimpleTipView(ctx).apply {
             setText(str)
@@ -61,33 +62,32 @@ class Tiast(val ctx: Context) {
     }
 
 
-    public fun anchor(view: View): Tiast {
+    fun anchor(view: View): Tiast {
         this.anchor = view
+
         return this
     }
 
-    public fun show(): Tiast {
+    fun show(): Tiast {
         if (tip == null && content != null) {
             setContent(content!!)
         }
-        val arr = calculateRegion()
 
-        val size = (tip as SimpleTipView).apply { anchor(anchor) }.calculateSize()
+        tip?.apply {
+            anchor(anchor)
+            anchor?.addOnLayoutChangeListener { v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom ->
+                //  Log.d("Tiast", "anchor change")
+                Looper.myQueue()
+                        .addIdleHandler {
+                            update()
+                            false
+                        }
+
+            }
+        }
 
 
-        val lp = WindowManager.LayoutParams()
-        lp.width = ctx.dip2px(size[0].toFloat())
-        lp.height = ctx.dip2px(size[1].toFloat())
-        lp.format = PixelFormat.TRANSLUCENT
-        lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL
-        lp.flags = (WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
-                or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
-        lp.gravity = Gravity.TOP or Gravity.LEFT or Gravity.START;
-
-        lp.x = arr[0] - size[0] / 2
-        lp.y = arr[1] - size[1]
-        wm.addView(tip, lp)
-
+        wm.addView(tip, params())
         handler
                 .postDelayed(
                         {
@@ -98,9 +98,32 @@ class Tiast(val ctx: Context) {
         return this
     }
 
+    private fun params(): WindowManager.LayoutParams {
+        val arr = calculateRegion()
+        val size = (tip as SimpleTipView).calculateSize()
+        val lp = WindowManager.LayoutParams()
+        lp.width = ctx.dip2px(size[0].toFloat())
+        lp.height = ctx.dip2px(size[1].toFloat())
+        lp.format = PixelFormat.TRANSLUCENT
+        lp.type = WindowManager.LayoutParams.TYPE_APPLICATION_PANEL
+        lp.flags = (WindowManager.LayoutParams.FLAG_NOT_TOUCH_MODAL or WindowManager.LayoutParams.FLAG_WATCH_OUTSIDE_TOUCH
+                or WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE)
+        lp.gravity = Gravity.TOP or Gravity.LEFT or Gravity.START
+
+        lp.x = arr[0] - size[0] / 2
+        lp.y = arr[1] - size[1]
+        return lp
+    }
+
+    private fun update() {
+        if (tip?.isAttachedToWindow == true)
+            wm.updateViewLayout(tip, params())
+
+    }
+
     private val handler = Handler()
 
-    public fun dismiss(): Tiast {
+    fun dismiss(): Tiast {
         tip?.let {
             if (it.isAttachedToWindow)
                 wm.removeView(it)
