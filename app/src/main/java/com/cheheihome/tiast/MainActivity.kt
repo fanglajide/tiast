@@ -3,8 +3,8 @@ package com.cheheihome.tiast
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.TextView
-import com.cheheihome.library.Tiast
 import kotlinx.android.synthetic.main.activity_main.*
+import me.lecc.tiast.Tiast
 
 class MainActivity : AppCompatActivity() {
 
