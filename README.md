@@ -18,4 +18,4 @@ dependencies {
 ```
 
 
-![Lib Sample](https://github.com/fanglajide/tiast/sceenshot/sceentshot.png)
+![Lib Sample](https://github.com/fanglajide/tiast/blob/master/sceenshot/screenshot.png)
