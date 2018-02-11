@@ -7,7 +7,7 @@
 ```Gradle
 repositories {
     maven {
-    url 'https://dl.bintray.com/fang/maven'
+        url 'https://dl.bintray.com/fang/maven'
     }
 }
 
