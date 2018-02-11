@@ -16,3 +16,6 @@ dependencies {
 }
 
 ```
+
+
+![Lib Sample](https://github.com/fanglajide/tiast/sceenshot/sceentshot.png)

@@ -16,13 +16,15 @@ class MainActivity : AppCompatActivity() {
                     v.setOnClickListener {
                         // Toast.makeText(this@MainActivity, v.text, Toast.LENGTH_SHORT).show()
 
-                        Tiast.make(this@MainActivity, "Hello World")
+                        Tiast.make(this@MainActivity, "Hello World,Hello Android")
                                 .anchor(v)
                                 .show()
                     }
                 }
 
     }
+
+    private val ts = mutableListOf<Tiast>()
 
 
 }
