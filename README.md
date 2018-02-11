@@ -3,8 +3,8 @@
 
 
 
-    ###  Gradle
-    ```Gradle
+###  Gradle
+```Gradle
     repositories {
     maven {
     url 'https://dl.bintray.com/fang/maven'
@@ -15,5 +15,4 @@
     compile 'me.lecc:tiast:0.0.1'
     }
 
-
-    ```
+```
