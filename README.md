@@ -5,14 +5,14 @@
 
 ###  Gradle
 ```Gradle
-    repositories {
+repositories {
     maven {
     url 'https://dl.bintray.com/fang/maven'
     }
-    }
+}
 
-    dependencies {
+dependencies {
     compile 'me.lecc:tiast:0.0.1'
-    }
+}
 
 ```
