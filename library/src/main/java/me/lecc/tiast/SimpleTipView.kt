@@ -10,17 +10,12 @@ import android.view.View
 
 
 /**
- * Created by chanlevel on 2017/10/25.
+ * Created by lec on 2017/10/25.
  */
 class SimpleTipView : View {
 
     constructor(ctx: Context) : super(ctx)
     constructor(ctx: Context, attributes: AttributeSet) : super(ctx, attributes)
-
-    // val ARROW_TOP_LEFT = 0X000001
-    // val ARROW_TOP_RIGHT = 0X000010
-    // val ARROW_BOTTOM_LEFT = 0X000100
-    // val ARROW_BOTTOM_RIGHT = 0X001000
 
 
     private var arrow_height = 20
@@ -43,19 +38,15 @@ class SimpleTipView : View {
         shadowRadius = context.dip2px(2f).toFloat()
         dx = context.dip2px(0.5f).toFloat()
         dy = context.dip2px(0.5f).toFloat()
-        arrow_height=context.dip2px(10f)
+        arrow_height = context.dip2px(10f)
 
         paint.isAntiAlias = true
-        /**
-         * 解决旋转时的锯齿问题
-         */
+
         paint.isFilterBitmap = true
         paint.isDither = true
         paint.style = Paint.Style.FILL
         paint.color = color
-        /**
-         * 设置阴影
-         */
+
         paint.setShadowLayer(shadowRadius, dx, dy, shadowColor)
 
         drawRect = RectF()
@@ -117,10 +108,10 @@ class SimpleTipView : View {
             val right = x + size[0] / 2
             val left = x - size[0] / 2
 
-            when {
-                right > context.screenWidth() -> return (right - context.screenWidth())
-                left < 0 -> return left
-                else -> return 0
+            return when {
+                right > context.screenWidth() -> (right - context.screenWidth())
+                left < 0 -> left
+                else -> 0
             }
 
         }
@@ -139,7 +130,10 @@ class SimpleTipView : View {
         setMeasuredDimension(w, h)
 
         arrowOffset = calculateArrowOffset()
+
     }
+
+    var rect: RectF = RectF()
 
 
     private val path = Path()
@@ -154,8 +148,11 @@ class SimpleTipView : View {
 
         path.reset()
         pathRect.reset()
+        rect.left = dx
+        rect.top = dy
+        rect.right = dx + width
+        rect.bottom = dy + height
 
-        val rect = RectF(dx, dy, dx + width, dy + height)
 
         pathRect.addRoundRect(rect, rectRadius, rectRadius, Path.Direction.CCW)
 
@@ -179,10 +176,7 @@ class SimpleTipView : View {
     fun drawText(canvas: Canvas) {
         canvas.translate(padding, padding)
 
-        layout?.let {
-
-            it.draw(canvas)
-        }
+        layout?.draw(canvas)
     }
 
 

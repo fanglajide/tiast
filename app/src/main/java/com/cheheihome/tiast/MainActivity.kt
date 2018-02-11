@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
                     v.setOnClickListener {
                         // Toast.makeText(this@MainActivity, v.text, Toast.LENGTH_SHORT).show()
 
-                        Tiast.make(this@MainActivity, "djfla放假啊三闾大夫进啦进啦")
+                        Tiast.make(this@MainActivity, "Hello World")
                                 .anchor(v)
                                 .show()
                     }

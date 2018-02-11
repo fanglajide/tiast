@@ -10,9 +10,9 @@ import android.view.WindowManager
 
 
 /**
- * Created by chanlevel on 2017/10/24.
+ * Created by lec on 2017/10/24.
  */
-class Tiast(val ctx: Context) {
+class Tiast(private val ctx: Context) {
 
     companion object {
 
@@ -28,6 +28,7 @@ class Tiast(val ctx: Context) {
 
     private var anchor: View? = null
     private var tip: SimpleTipView? = null
+
     private val wm: WindowManager by lazy {
         ctx.getSystemService(Context.WINDOW_SERVICE) as WindowManager
     }
@@ -46,7 +47,7 @@ class Tiast(val ctx: Context) {
         }
     }
 
-    protected fun calculateRegion(): IntArray {
+    private fun calculateRegion(): IntArray {
 
         var x = ctx.screenWidth() / 2
         var y = ctx.screenHeight() / 2
@@ -132,4 +133,26 @@ class Tiast(val ctx: Context) {
     }
 
 
+}
+fun Context.dip2px(dpValue: Float): Int {
+    val scale = resources.displayMetrics.density
+    return (dpValue * scale + 0.5f).toInt()
+}
+fun Context.px2dip(pxValue: Float): Int {
+    val scale = resources.displayMetrics.density
+    return (pxValue / scale + 0.5f).toInt()
+}
+fun Context.screenWidth() = resources.displayMetrics.widthPixels
+
+fun Context.screenHeight() = resources.displayMetrics.heightPixels
+
+fun matchChoose(start: Int, end: Int, num: Int): Int {
+    var s = start
+    var e = end
+    if (s > end) {
+        val tmp = s
+        e = s
+        s = tmp
+    }
+    return Math.max(s, Math.min(num, e))
 }
