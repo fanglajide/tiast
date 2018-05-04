@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 
+
 const val DEFAULT_MAX = 1000f
 
 class MPChartView(private val ctx: Context, attributeSet: AttributeSet? = null) : FrameLayout(ctx, attributeSet) {
@@ -31,7 +32,7 @@ class MPChartView(private val ctx: Context, attributeSet: AttributeSet? = null) 
 
                     val lastPosition = (recyclerView?.layoutManager as?  LinearLayoutManager)?.findLastVisibleItemPosition()
 
-                    if (!loading && lastPosition == datas.size) {
+                    if (!dataFinish&&!loading && lastPosition == datas.size-1) {
                         loading = true
                         callback?.loadMore()
                     }
@@ -54,10 +55,15 @@ class MPChartView(private val ctx: Context, attributeSet: AttributeSet? = null) 
     private var loading = false
     private var callback: Callback? = null
 
+    fun setCallback(callback: Callback){
+        this.callback=callback
+    }
 
     var max = DEFAULT_MAX
 
     var dataFinish = false
+
+
 
     fun setData(datas: List<Data>) {
         this.datas.clear()
@@ -78,9 +84,10 @@ class MPChartView(private val ctx: Context, attributeSet: AttributeSet? = null) 
     }
 
 
+
     interface Callback {
         fun loadMore()
-        fun top()
+
     }
 
 
@@ -150,13 +157,14 @@ class ItemView(ctx: Context, attributeSet: AttributeSet? = null) : View(ctx, att
         Paint().apply {
             textSize = 20f
             color = Color.BLACK
+            isAntiAlias=true
         }
     }
 
     val rectPaint by lazy {
         Paint().apply {
             strokeWidth = context.dip2px(2f).toFloat()
-            color = Color.BLACK
+
         }
     }
 
@@ -167,6 +175,8 @@ class ItemView(ctx: Context, attributeSet: AttributeSet? = null) : View(ctx, att
         val padding = context.dip2px(20f)
 
 //        val rectW = measuredWidth * 3f / 4f
+        textPaint.textSize = context.sp2px(6f).toFloat()
+
         val textHeight = textPaint.textSize
 
         val maxH = (measuredHeight - textHeight - padding * 2) / 2f
@@ -176,7 +186,6 @@ class ItemView(ctx: Context, attributeSet: AttributeSet? = null) : View(ctx, att
 
 
         data?.apply {
-
 
             //draw rect
 
@@ -200,16 +209,22 @@ class ItemView(ctx: Context, attributeSet: AttributeSet? = null) : View(ctx, att
                 canvas.drawRect(rectL, lineH, rectR, b, rectPaint)
                 val valueW = textPaint.measureText(value.toString())
 
-                canvas.drawText(value.toString(), measuredWidth / 2 - valueW / 2f, b + textHeight, textPaint)
+               // canvas.drawText(value.toString(), measuredWidth / 2 - valueW / 2f, b + textHeight*3/2f, textPaint)
+
+                canvas.drawText(value.toString(), measuredWidth / 2 - valueW / 2f, lineH-textHeight, textPaint)
+
 
             }
 
             //draw time
+
+            textPaint.textSize = context.sp2px(10f).toFloat()
+
             val tw = textPaint.measureText(time)
             canvas.drawText(time, measuredWidth / 2 - tw / 2f, measuredHeight - textHeight / 2f, textPaint)
             // draw horizontal line
-           // rectPaint.color = Color.BLACK
-          //  canvas.drawLine(0f, lineH, measuredWidth.toFloat(), lineH, rectPaint)
+            // rectPaint.color = Color.BLACK
+            //  canvas.drawLine(0f, lineH, measuredWidth.toFloat(), lineH, rectPaint)
 
         }
     }
@@ -222,4 +237,7 @@ fun Context.dip2px(dpValue: Float): Int {
     return (dpValue * scale + 0.5f).toInt()
 }
 
-
+fun Context.sp2px(spValue: Float): Int {
+    val fontScale = this.resources.displayMetrics.scaledDensity
+    return (spValue * fontScale + 0.5f).toInt()
+}
