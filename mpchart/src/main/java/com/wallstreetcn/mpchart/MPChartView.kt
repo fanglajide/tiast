@@ -9,36 +9,45 @@ import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
-import java.util.*
+import android.widget.FrameLayout
 
-const val DEFAULT_MAX=1000f
+const val DEFAULT_MAX = 1000f
 
-class MPChartView(ctx: Context, attributeSet: AttributeSet? = null) : RecyclerView(ctx, attributeSet) {
-    var datas = Collections.emptyList<Data>()
+class MPChartView(private val ctx: Context, attributeSet: AttributeSet? = null) : FrameLayout(ctx, attributeSet) {
+    var datas = mutableListOf<Data>()
 
     private val adapter: ChartAdapter by lazy {
-        ChartAdapter(context).apply { setData(datas!!) }
+        ChartAdapter(ctx)//.apply { setData(datas?:Collections.emptyList()) }
+    }
+
+    private val recyclerView by lazy {
+        RecyclerView(ctx).apply {
+
+            layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, true)
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+
+                override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+
+                    val lastPosition = (recyclerView?.layoutManager as?  LinearLayoutManager)?.findLastVisibleItemPosition()
+
+                    if (!loading && lastPosition == datas.size) {
+                        loading = true
+                        callback?.loadMore()
+                    }
+
+                }
+            })
+
+            this@MPChartView.adapter.setData(datas)
+            adapter = this@MPChartView.adapter
+        }
     }
 
     init {
-        layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, true)
 
-        addOnScrollListener(object : OnScrollListener() {
+        addView(recyclerView, LayoutParams(LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
 
-            override fun onScrolled(recyclerView: RecyclerView?, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-
-                val lastPosition = (recyclerView?.layoutManager as?  LinearLayoutManager)?.findLastVisibleItemPosition()
-
-                if (!loading && lastPosition == datas?.size ?: 0) {
-                    loading = true
-                    callback?.loadMore()
-                }
-
-            }
-        })
-
-        setAdapter(adapter)
     }
 
 
@@ -103,7 +112,7 @@ class ChartAdapter(private val ctx: Context) : RecyclerView.Adapter<ChartAdapter
     }
 
 
-    class VH(ctx: Context) : RecyclerView.ViewHolder(ItemView(ctx)) {
+    class VH(ctx: Context) : RecyclerView.ViewHolder(ItemView(ctx).apply { layoutParams = ViewGroup.LayoutParams(ctx.dip2px(50f), ViewGroup.LayoutParams.MATCH_PARENT) }) {
 
         fun setMax(max: Float) {
             (itemView as? ItemView)?.max = max
@@ -134,12 +143,12 @@ class ItemView(ctx: Context, attributeSet: AttributeSet? = null) : View(ctx, att
             invalidate()
             field = value
         }
-        get() = if (field == 0f) Math.abs(data?.value ?: 1000f) * 1.2f else field
+        get() = if (field == 0f) Math.abs(data?.value ?: DEFAULT_MAX) * 1.2f else field
 
 
     val textPaint: Paint by lazy {
         Paint().apply {
-            textSize = 17f
+            textSize = 20f
             color = Color.BLACK
         }
     }
@@ -157,8 +166,8 @@ class ItemView(ctx: Context, attributeSet: AttributeSet? = null) : View(ctx, att
 
         val padding = context.dip2px(20f)
 
-        val rectW = measuredWidth * 3f / 4f
-        val textHeight = 17
+//        val rectW = measuredWidth * 3f / 4f
+        val textHeight = textPaint.textSize
 
         val maxH = (measuredHeight - textHeight - padding * 2) / 2f
 
@@ -168,36 +177,39 @@ class ItemView(ctx: Context, attributeSet: AttributeSet? = null) : View(ctx, att
 
         data?.apply {
 
-            // draw horizontal line
-            canvas.drawLine(0f, lineH, measuredWidth.toFloat(), lineH, rectPaint)
 
             //draw rect
 
-            val rectL = measuredWidth / 8f
-            val rectR = measuredHeight * 7 / 8f
+            val rectL = measuredWidth / 5f
+            val rectR = measuredWidth * 4 / 5f
 
             if (value > 0) {
 
-                val t = lineH - value * max / maxH
+                val t = lineH - value * maxH / max
                 rectPaint.color = Color.RED
 
                 canvas.drawRect(rectL, t, rectR, lineH, rectPaint)
+                val valueW = textPaint.measureText(value.toString())
 
-                canvas.drawText(value.toString(), rectL, t - textHeight, textPaint)
+                canvas.drawText(value.toString(), measuredWidth / 2 - valueW / 2f, t - textHeight, textPaint)
 
             } else {
-                rectPaint.color = Color.GRAY
+                rectPaint.color = Color.GREEN
 
-                val b = lineH - value * max / maxH
+                val b = lineH - value * maxH / max
                 canvas.drawRect(rectL, lineH, rectR, b, rectPaint)
+                val valueW = textPaint.measureText(value.toString())
 
-                canvas.drawText(value.toString(), rectL, b + textHeight, textPaint)
+                canvas.drawText(value.toString(), measuredWidth / 2 - valueW / 2f, b + textHeight, textPaint)
 
             }
 
             //draw time
             val tw = textPaint.measureText(time)
-            canvas.drawText(time, measuredWidth / 2 - tw, measuredHeight - textHeight / 2f, textPaint)
+            canvas.drawText(time, measuredWidth / 2 - tw / 2f, measuredHeight - textHeight / 2f, textPaint)
+            // draw horizontal line
+           // rectPaint.color = Color.BLACK
+          //  canvas.drawLine(0f, lineH, measuredWidth.toFloat(), lineH, rectPaint)
 
         }
     }
