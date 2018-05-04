@@ -1,1 +1,1 @@
-include ':app', ':library', ':radar'
+include ':app', ':library', ':radar', ':mpchart'
