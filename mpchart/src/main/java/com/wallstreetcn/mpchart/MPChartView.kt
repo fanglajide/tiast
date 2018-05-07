@@ -3,6 +3,7 @@ package com.wallstreetcn.mpchart
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.DashPathEffect
 import android.graphics.Paint
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -32,7 +33,7 @@ class MPChartView(private val ctx: Context, attributeSet: AttributeSet? = null) 
 
                     val lastPosition = (recyclerView?.layoutManager as?  LinearLayoutManager)?.findLastVisibleItemPosition()
 
-                    if (!dataFinish&&!loading && lastPosition == datas.size-1) {
+                    if (!dataFinish && !loading && lastPosition == datas.size - 1) {
                         loading = true
                         callback?.loadMore()
                     }
@@ -55,14 +56,13 @@ class MPChartView(private val ctx: Context, attributeSet: AttributeSet? = null) 
     private var loading = false
     private var callback: Callback? = null
 
-    fun setCallback(callback: Callback){
-        this.callback=callback
+    fun setCallback(callback: Callback) {
+        this.callback = callback
     }
 
     var max = DEFAULT_MAX
 
     var dataFinish = false
-
 
 
     fun setData(datas: List<Data>) {
@@ -82,7 +82,6 @@ class MPChartView(private val ctx: Context, attributeSet: AttributeSet? = null) 
     fun dataFinish(finish: Boolean) {
         this.dataFinish = finish
     }
-
 
 
     interface Callback {
@@ -157,7 +156,7 @@ class ItemView(ctx: Context, attributeSet: AttributeSet? = null) : View(ctx, att
         Paint().apply {
             textSize = 20f
             color = Color.BLACK
-            isAntiAlias=true
+            isAntiAlias = true
         }
     }
 
@@ -168,6 +167,16 @@ class ItemView(ctx: Context, attributeSet: AttributeSet? = null) : View(ctx, att
         }
     }
 
+    val linePaint by lazy {
+        Paint().apply {
+            color = Color.parseColor("#d8d8d8")
+            pathEffect = DashPathEffect(floatArrayOf(5f, 5f), 0f)
+        }
+    }
+
+    init {
+        setLayerType(LAYER_TYPE_SOFTWARE, null)
+    }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
@@ -209,9 +218,9 @@ class ItemView(ctx: Context, attributeSet: AttributeSet? = null) : View(ctx, att
                 canvas.drawRect(rectL, lineH, rectR, b, rectPaint)
                 val valueW = textPaint.measureText(value.toString())
 
-               // canvas.drawText(value.toString(), measuredWidth / 2 - valueW / 2f, b + textHeight*3/2f, textPaint)
+                // canvas.drawText(value.toString(), measuredWidth / 2 - valueW / 2f, b + textHeight*3/2f, textPaint)
 
-                canvas.drawText(value.toString(), measuredWidth / 2 - valueW / 2f, lineH-textHeight, textPaint)
+                canvas.drawText(value.toString(), measuredWidth / 2 - valueW / 2f, lineH - textHeight, textPaint)
 
 
             }
@@ -223,8 +232,7 @@ class ItemView(ctx: Context, attributeSet: AttributeSet? = null) : View(ctx, att
             val tw = textPaint.measureText(time)
             canvas.drawText(time, measuredWidth / 2 - tw / 2f, measuredHeight - textHeight / 2f, textPaint)
             // draw horizontal line
-            // rectPaint.color = Color.BLACK
-            //  canvas.drawLine(0f, lineH, measuredWidth.toFloat(), lineH, rectPaint)
+            canvas.drawLine(0f, lineH, measuredWidth.toFloat(), lineH, linePaint)
 
         }
     }
